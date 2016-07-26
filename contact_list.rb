@@ -1,46 +1,55 @@
 require_relative 'contact'
 
-unless ARGV[0] == true
+
+#Shows available commands if user does not enter ARGV direction.
+unless ARGV[0]
 puts "Here is a list of available commands:
   new - Create a new contact
   list - list all contacts
   show - show a contact
   search - search all contacts"
+  exit
 end
 
 class ContactList
   def initialize(input)
     @input = input
-    input = gets.strip
-    case input
+    case input     
+      #runs the 'create' method in Contact class to add to contacts.csv
       when 'new'
-        #runs the new method in Contact class to add to contacts.csv
         puts 'Enter name: '
-        name = gets.chomp
+        name = STDIN.gets.chomp
         puts 'Enter email: '
-        email = gets.chomp
+        email = STDIN.gets.chomp
         puts Contact.create(name, email)
         puts "#{name} has been added to the database."
-      when 'list'
-        #runs the all method in Contact class
-        puts Contact.all
-      when 'show'
-        #runs the find method in Contact class
-        puts 'Enter ID of contact to display: '
-        id = gets.chomp.capitalize
-        puts Contact.find(id)
-      when 'search' 
-        #runs the search method in Contact class
-        puts "Enter search term: "
-        s = gets.chomp
-        puts Contact.search(s)
-      else 
-          'Command not found'
-      end  
-  end
-
     
-  # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
-
+      #runs the all method in Contact class
+      when 'list'
+        puts Contact.all
+     
+      #runs the find method in Contact class
+      when 'show'   
+        show = ARGV[1]
+        if !show
+          puts "You must enter an ID"
+        elsif 
+         !Contact.find(show) 
+          puts "User #{show} was not found"
+        else
+          puts Contact.find(show) 
+        end
+     
+      #runs the search method in Contact class
+      when 'search'
+        search = ARGV[1]
+        if !search
+          puts "You must enter a search term"
+        else
+        puts Contact.search(search)
+      end  
+    end
+  end
 end
-ContactList.new(ARGV.first)
+
+ContactList.new(ARGV[0])

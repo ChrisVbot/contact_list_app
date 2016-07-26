@@ -17,6 +17,7 @@ class Contact
   # Provides functionality for managing contacts in the csv file.
   class << self
 
+    #Dispays list of all contacts in the contacts.csv file. 
     def all 
       all = CSV.foreach("contacts.csv").with_index do |row, line|
         puts [line, row].flatten.inspect
