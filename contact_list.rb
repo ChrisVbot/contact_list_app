@@ -15,13 +15,14 @@ class ContactList
   def initialize(input)
     @input = input
     case input     
-      #runs the 'create' method in Contact class to add to contacts.csv
+      #runs the 'create' method in Contact class to add to contacts database'
       when 'new'
         puts 'Enter name: '
         name = STDIN.gets.chomp
         puts 'Enter email: '
         email = STDIN.gets.chomp
-        puts Contact.create(name, email)
+        new_contact = Contact.create(name, email)
+        new_contact.save
         puts "#{name} has been added to the database."
     
       #runs the all method in Contact class
@@ -44,10 +45,11 @@ class ContactList
       when 'search'
         search = ARGV[1]
         if !search
-          puts "You must enter a search term"
+          puts "You must enter a name to search for"
         else
-        puts Contact.search(search)
-      end  
+          result = Contact.search(name)
+          puts result
+        end  
     end
   end
 end

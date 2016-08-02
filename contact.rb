@@ -1,60 +1,62 @@
-require 'csv'
+require 'pg'
 
 # Represents a person in an address book.
 
 class Contact
 
   attr_accessor :name, :email
+  attr_reader :id
   
   # Creates a new contact object
 
-  def initialize(name, email) 
+  def initialize(name, email, id=nil) 
     @name = name
     @email = email
-
+    @id = id
   end
 
-  # Provides functionality for managing contacts in the csv file.
+  def to_s
+    "#{id}: #{name} (#{email})"
+  end
+
+  def save
+    results = Contact.connection.exec_params('INSERT INTO contacts (name, email) VALUES ($1, $2) RETURNING id, name, email;', [@name, @email])
+  end
+  
   class << self
-
-    #Dispays list of all contacts in the contacts.csv file. 
-    def all 
-      all = CSV.foreach("contacts.csv").with_index do |row, line|
-        puts [line, row].flatten.inspect
-      end
-      return all
-    end
-
-    # Creates a new contact, adding it to the csv file, returning the new contact.
-    def create(name, email)
-      contact = Contact.new(name, email)
-      CSV.open('contacts.csv', 'ab') do | csv |
-        csv << [name, email]
-      end
-      contact
-    end
     
-    # Find the Contact in the 'contacts.csv' file with the matching id.
-    def find(id)  
-      CSV.foreach('contacts.csv', 'r').with_index do | row, line |
-        csv = [line, row].flatten.inspect
-        if csv.include?(id)
-          return csv
-        end
-      end    
+    def connection
+      @@conn = PG.connect(
+        host: 'localhost',
+        dbname: 'contacts',
+        user: 'development',
+        password: 'development'
+        )
+      @@conn
+    end
+
+
+    #Dispays list of all contacts in the 'contacts' database. 
+    def all
+      results = self.connection.exec_params('SELECT * FROM contacts ORDER BY id')
+      results = results.map{|row|  self.new(row['name'], row['email'], row['id'])}
+    end
       
+    # Creates a new contact, adding it to the 'contacts' database, via the save instance method.
+    def create(name, email)
+      Contact.new(name, email)
     end
     
-    # Search for contacts by either name or email.
-    def search(term) 
-      CSV.foreach('contacts.csv', 'r').with_index do | row, line|
-        csv = [line, row].flatten.inspect
-        if csv.include?(term)
-          return csv
-        end
-      end
+    # Find the Contact in the 'contacts' database with the matching id.
+    def find(id)    
+      results = self.connection.exec_params('SELECT * FROM contacts WHERE id = $1',[id])
+      results = results.map{|row| self.new(row['name'], row['email'], row['id'])}
     end
-
+    
+    def search(name)
+      results = self.connection.exec_params('SELECT * FROM contacts WHERE name LIKE $1',["%#{name}%"])
+     
+    end
+  
   end
-
 end
