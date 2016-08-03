@@ -83,7 +83,7 @@ class ContactList
          puts "You must enter an ID to destroy"
         else 
           the_contact = Contact.find(input)
-          puts "Entry to destroy: "
+          puts "Entry to destroy: " 
           puts the_contact
           puts "Are you sure? y/n"
           confirmation = STDIN.gets.chomp
