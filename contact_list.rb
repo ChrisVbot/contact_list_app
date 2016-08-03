@@ -1,17 +1,18 @@
+require 'active_record'
 require_relative 'contact'
 
 
-#Shows available commands if user does not enter ARGV direction.
-unless ARGV[0]
-puts "Here is a list of available commands:
-  new - Create a new contact
-  list - list all contacts
-  show - show a contact
-  search - search all contacts"
-  exit
-end
+
 
 class ContactList
+      ActiveRecord::Base.establish_connection(
+        adapter: 'postgresql',
+        host: 'localhost',
+        dbname: 'contacts',
+        user: 'development',
+        password: 'development'
+        )
+
   def initialize(input)
     @input = input
     case input     
@@ -21,8 +22,7 @@ class ContactList
         name = STDIN.gets.chomp
         puts 'Enter email: '
         email = STDIN.gets.chomp
-        new_contact = Contact.create(name, email)
-        new_contact.save
+        new_contact = Contact.create(name: name, email: email)
         puts "#{name} has been added to the database."
     
       #runs the 'all' method in Contact class
@@ -49,7 +49,7 @@ class ContactList
         if !input
           puts "You must enter a name to search for"
         else
-          puts Contact.search(input)
+          puts Contact.where("name like?", "%#{input}%")
         end  
 
       #Finds contact based on ID, then allows user to update name and email  
@@ -98,6 +98,17 @@ class ContactList
       else puts 'Command not found'
     end
   end
+
+#Shows available commands if user does not enter ARGV direction.
+  unless ARGV[0]
+  puts "Here is a list of available commands:
+    new - Create a new contact
+    list - list all contacts
+    show - show a contact
+    search - search all contacts"
+    exit
+  end
+
 
 end
 
