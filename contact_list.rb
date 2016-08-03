@@ -3,13 +3,14 @@ require_relative 'contact'
 
 
 class ContactList
-      ActiveRecord::Base.establish_connection(
-        adapter: 'postgresql',
-        host: 'localhost',
-        dbname: 'contacts',
-        user: 'development',
-        password: 'development'
-        )
+  
+  ActiveRecord::Base.establish_connection(
+    adapter: 'postgresql',
+    host: 'localhost',
+    dbname: 'contacts',
+    user: 'development',
+    password: 'development'
+    )
 
   def initialize(input)
     @input = input
