@@ -80,7 +80,7 @@ class ContactList
       when 'destroy'
         input = ARGV[1]
         if !input
-          puts "You must enter an ID to destroy"
+         puts "You must enter an ID to destroy"
         else 
           the_contact = Contact.find(input)
           puts "Entry to destroy: "

@@ -32,7 +32,7 @@ class Contact
 
   #Deletes the instanced contact from 'contacts' database
   def destroy
-    Contact.connection.exec_params('DELETE FROM contacts WHERE id = $1;', [id])
+    Contact.connection.exec_params('DELETE FROM contacts WHERE id = $1;', [id])  
   end
   #Everything below this is a class method. 
   class << self
