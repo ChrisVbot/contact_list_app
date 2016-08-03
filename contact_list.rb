@@ -29,7 +29,7 @@ class ContactList
       when 'list'
         puts Contact.all
      
-      #runs the find method in Contact class
+      #runs the find method in Contact class.
       when 'show'   
         show = ARGV[1]
         if show

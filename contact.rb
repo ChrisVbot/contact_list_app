@@ -16,7 +16,7 @@ class Contact
   end
 
   #Overrides default to_s method to display output as strings instead of 
-  # => SQL objects. 
+  # SQL objects. 
   def to_s
     "#{id}: #{name} (#{email})"
   end
