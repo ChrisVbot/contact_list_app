@@ -2,8 +2,6 @@ require 'active_record'
 require_relative 'contact'
 
 
-
-
 class ContactList
       ActiveRecord::Base.establish_connection(
         adapter: 'postgresql',

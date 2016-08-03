@@ -19,6 +19,7 @@ class Contact < ActiveRecord::Base
     "#{id}: #{name} (#{email})"
   end
 
+
   # #Saves instanced contact into 'contacts' database. If contact already exists (verified by id), instead updates that contact's information. 
   # def save
   #   if id 
