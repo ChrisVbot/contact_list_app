@@ -25,33 +25,80 @@ class ContactList
         new_contact.save
         puts "#{name} has been added to the database."
     
-      #runs the all method in Contact class
+      #runs the 'all' method in Contact class
       when 'list'
         puts Contact.all
      
       #runs the find method in Contact class
       when 'show'   
         show = ARGV[1]
-        if !show
-          puts "You must enter an ID"
-        elsif 
-         !Contact.find(show) 
-          puts "User #{show} was not found"
+        if show
+          contact = Contact.find(show)
+          puts contact ? contact : "User #{show} was not found"
+          # if contact
+          #   puts contact
+          # else
+          #   puts "User #{show} was not found"
+          # end
         else
-          puts Contact.find(show) 
+          puts "You must enter an ID"
         end
-     
       #runs the search method in Contact class
       when 'search'
-        search = ARGV[1]
-        if !search
+        input = ARGV[1]
+        if !input
           puts "You must enter a name to search for"
         else
-          result = Contact.search(name)
-          puts result
+          puts Contact.search(input)
         end  
+
+      #Finds contact based on ID, then allows user to update name and email  
+      when 'update'
+        input = ARGV[1]
+        if !input
+          puts "You must enter an ID to update"
+        else
+          puts "Entry to update: "
+          the_contact = Contact.find(input)
+          if the_contact
+            puts the_contact
+            puts "Enter new first and last name"
+            the_contact.name = STDIN.gets.chomp
+            puts "Enter new email"
+            the_contact.email = STDIN.gets.chomp
+            # the_contact = Contact.find(input)
+            # the_contact.name = new_name
+            # the_contact.email = new_email
+            puts "#{the_contact.name} has been updated"
+            the_contact.save
+          else
+            puts "No such contact with ID: " + input.to_s
+          end
+        end
+
+      #Finds contact based on ID, then allows user to delete contact from database via #destroy method. 
+      when 'destroy'
+        input = ARGV[1]
+        if !input
+          puts "You must enter an ID to destroy"
+        else 
+          the_contact = Contact.find(input)
+          puts "Entry to destroy: "
+          puts the_contact
+          puts "Are you sure? y/n"
+          confirmation = STDIN.gets.chomp
+            case confirmation
+              when 'y' 
+                puts "#{the_contact} has been deleted."
+                the_contact.destroy
+              else
+              end
+        end
+      
+      else puts 'Command not found'
     end
   end
+
 end
 
 ContactList.new(ARGV[0])
